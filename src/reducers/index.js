@@ -1,4 +1,4 @@
 import {combineReducers} from 'redux';
-import image from './image';
+import image from '../redux/image';
 
 export default combineReducers({image})
