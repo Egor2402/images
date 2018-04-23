@@ -54,7 +54,7 @@ export const setAddImageDataState = data => dispatch => {
 export const getImagesList = () => dispatch => {
     api.get('/ImageFeed').then(({data}) => {
         _.each(data, image => {
-            image.labels = _.map(image.imageObjects, imageObject => imageObject.imageObjectLabels[0].name);
+            image.labels = _.flatten(_.map(image.imageObjects, imageObject => imageObject.imageObjectLabels));
         });
 
         dispatch({type: GET_IMAGES_LIST, payload: data});

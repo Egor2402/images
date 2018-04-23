@@ -47,7 +47,7 @@ class ImagesTable extends Component {
                             <TableRowColumn><Image src={image.imgURL}/></TableRowColumn>
                             <TableRowColumn>{image.description}</TableRowColumn>
                             <TableRowColumn>
-                                {image.labels.map((label, index) => (<Chip key={index}>{label}</Chip>))}
+                                {image.labels.map(label => (<Chip key={label.ID} style={{display: 'inline-block'}}>{label.name}</Chip>))}
                             </TableRowColumn>
                             <TableRowColumn style={{textAlign: 'center'}}>
                                 <FlatButton primary={true} onClick={() => this.editImage(image)}>Edit</FlatButton>
