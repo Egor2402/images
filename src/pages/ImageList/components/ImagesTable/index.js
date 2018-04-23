@@ -11,6 +11,7 @@ import {
     TableRowColumn
 } from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
+import Chip from 'material-ui/Chip';
 import {Image} from './styled';
 
 import * as imageActions from '../../../../redux/image';
@@ -45,7 +46,9 @@ class ImagesTable extends Component {
                         return (<TableRow key={image.ID}>
                             <TableRowColumn><Image src={image.imgURL}/></TableRowColumn>
                             <TableRowColumn>{image.description}</TableRowColumn>
-                            <TableRowColumn></TableRowColumn>
+                            <TableRowColumn>
+                                {image.labels.map((label, index) => (<Chip key={index}>{label}</Chip>))}
+                            </TableRowColumn>
                             <TableRowColumn style={{textAlign: 'center'}}>
                                 <FlatButton primary={true} onClick={() => this.editImage(image)}>Edit</FlatButton>
                                 <FlatButton primary={true} onClick={() => this.deleteImage(image)}>Delete</FlatButton>

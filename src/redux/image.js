@@ -1,4 +1,5 @@
 import api from '../api';
+import _ from 'lodash';
 
 const GET_IMAGES_LIST = 'GET_IMAGES_LIST';
 const DELETE_IMAGE = 'DELETE_IMAGE';
@@ -51,7 +52,11 @@ export const setAddImageDataState = data => dispatch => {
 }
 
 export const getImagesList = () => dispatch => {
-    api.get('/Image').then(({data}) => {
+    api.get('/ImageFeed').then(({data}) => {
+        _.each(data, image => {
+            image.labels = _.map(image.imageObjects, imageObject => imageObject.imageObjectLabels[0].name);
+        });
+
         dispatch({type: GET_IMAGES_LIST, payload: data});
     }, () => console.log('Error'));
 }
