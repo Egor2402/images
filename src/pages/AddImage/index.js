@@ -12,13 +12,17 @@ import ImageObjects from './components/ImageObjects';
 import * as imageActions from '../../redux/image';
 
 class AddImage extends Component {
+    addImage = () => {
+        this.props.imageActions.addImage(this.props.addImageData);
+    }
+
     render() {
         return (
             <div>
                 <HeaderWithControls>
                     <h2>Add Image</h2>
                     <ControlsBlock>
-                        <RaisedButton label="Save"></RaisedButton>
+                        <RaisedButton onClick={this.addImage} label="Save"></RaisedButton>
                         <RaisedButton href="/" label="Cancel"></RaisedButton>
                     </ControlsBlock>
                 </HeaderWithControls>

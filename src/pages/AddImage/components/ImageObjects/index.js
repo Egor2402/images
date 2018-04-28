@@ -1,8 +1,9 @@
+import _ from 'lodash';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
-import {RaisedButton, FlatButton, Dialog, SelectField, MenuItem} from 'material-ui';
+import {RaisedButton, FlatButton, Dialog, SelectField, MenuItem, Chip} from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import {
@@ -20,7 +21,8 @@ import * as imageActions from '../../../../redux/image';
 class ImageObjects extends Component {
     state = {
         labelsDialogIsOpened: false,
-        selectedLabel: null
+        selectedObjectIndex: null,
+        selectedLabelID: null,
     }
 
     addObject = () => {
@@ -40,21 +42,29 @@ class ImageObjects extends Component {
         this.props.imageActions.setAddImageDataState({imageObjects});
     }
 
-    addLabel = () => {
+    addLabel = (selectedObjectIndex) => {
         this.props.imageActions.getLabels();
-        this.setState({labelsDialogIsOpened: true});
+        this.setState({labelsDialogIsOpened: true, selectedObjectIndex});
     }
 
     handleClose = () => this.setState({labelsDialogIsOpened: false});
 
-    selectLabel = (event, index, value) => this.setState({selectedLabel: value});
+    selectLabel = (event, index, value) => this.setState({selectedLabelID: value});
+
+    addLabelToObject = () => {
+        const updatedImageObjects = _.clone(this.props.addImageData.imageObjects);
+        updatedImageObjects[this.state.selectedObjectIndex].label = _.find(this.props.labels, {ID: this.state.selectedLabelID});
+        this.props.imageActions.setAddImageDataState({imageObjects: updatedImageObjects});
+        this.setState({labelsDialogIsOpened: false, selectedObjectIndex: null, selectedLabelID: null});
+        console.log(this.props.addImageData.imageObjects);
+    }
 
     render() {
         const {image, imageObjects} = this.props.addImageData;
 
         const actions = [
             <FlatButton label="Cancel" primary={true} onClick={this.handleClose}/>,
-            <FlatButton label="Save" primary={true} onClick={this.handleClose} />
+            <FlatButton label="Save" primary={true} onClick={this.addLabelToObject} />
         ];
 
         return (
@@ -79,7 +89,11 @@ class ImageObjects extends Component {
                                                 <div>y: {object.location.y}</div>
                                             </TableRowColumn>
                                             <TableRowColumn>
-                                                <ContentAdd onClick={() => this.addLabel()} style={{cursor: 'pointer'}}/>
+                                                {
+                                                    object.label ?
+                                                        <Chip key={object.label.ID} style={{display: 'inline-block'}}>{object.label.name}</Chip> :
+                                                        <ContentAdd onClick={() => this.addLabel(index)} style={{cursor: 'pointer'}}/>
+                                                }
                                             </TableRowColumn>
                                             <TableRowColumn style={{textAlign: 'center'}}>
                                                 <FlatButton primary={true} onClick={() => this.deleteObject(index)}>Delete</FlatButton>
@@ -103,7 +117,7 @@ class ImageObjects extends Component {
                     <SelectField
                         fullWidth={true}
                         floatingLabelText="Labels"
-                        value={this.state.selectedLabel}
+                        value={this.state.selectedLabelID}
                         onChange={this.selectLabel}
                     >
                         {

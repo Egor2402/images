@@ -6,6 +6,7 @@ const DELETE_IMAGE = 'DELETE_IMAGE';
 const GET_IMAGE = 'GET_IMAGE';
 const SET_ADD_IMAGE_DATA_STATE = 'SET_ADD_IMAGE_DATA_STATE';
 const GET_LABELS = 'GET_LABELS';
+const ADD_IMAGE = 'ADD_IMAGE';
 
 const initialState = {
     imageListData: {
@@ -42,6 +43,9 @@ export default function image(state = initialState, action) {
             return {...state, addImageData};
         }
 
+        case ADD_IMAGE:
+            return {...state, addImageData: initialState.addImageData};
+
         default:
             return state;
     }
@@ -76,5 +80,13 @@ export const getImage = (id) => dispatch => {
 export const deleteImage = id => dispatch => {
     api.delete(`/Image/${id}`).then(({data}) => {
         dispatch({type: DELETE_IMAGE, payload: {id}});
+    }, () => console.log('Error'));
+}
+
+export const addImage = (addImageData) => dispatch => {
+    api.post(`/Image`, {
+        image: addImageData.image
+    }).then(({data}) => {
+        dispatch({type: ADD_IMAGE, payload: data});
     }, () => console.log('Error'));
 }
